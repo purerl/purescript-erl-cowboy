@@ -20,6 +20,9 @@ foreign import reply :: StatusCode -> Headers -> String -> Req -> Req
 -- | Send the reply without setting the body
 foreign import replyWithoutBody :: StatusCode -> Headers -> Req -> Req
 
+-- | Send the reply with already set headers and body
+foreign import replyStatus :: StatusCode -> Req -> Req
+
 -- Raw request
 
 foreign import method :: Req -> String
@@ -49,6 +52,12 @@ header :: String -> Req -> Maybe String
 header = headerImpl Nothing Just
 
 foreign import headers :: Req -> Headers
+
+foreign import setHeader :: String -> String -> Req -> Req
+
+foreign import setCookie :: String -> String -> Req -> Req
+
+foreign import setBody :: String -> Req -> Req
 
 type IpAddress = Tuple4 Int Int Int Int
 
