@@ -4,9 +4,9 @@ import Data.Maybe (Maybe(..))
 import Erl.Data.List (List)
 import Erl.Data.Tuple (Tuple2, Tuple4)
 
-foreign import data Req :: *
+foreign import data Req :: Type
 
-foreign import data Ok :: *
+foreign import data Ok :: Type
 foreign import ok :: Ok
 
 -- http_status() = non_neg_integer() | binary()
