@@ -1,12 +1,13 @@
 {
-    "name": "purescript-erl-cowboy",
-    "set": "erl-0.10.2-3",
-    "source": "https://github.com/purerl/package-sets.git",
-    "depends": [
-        "transformers",
-        "erl-tuples",
-        "erl-lists",
-        "maybe",
-        "prelude"
-    ]
+  "name": "purescript-erl-cowboy",
+  "set": "erl-0.12.0-20180719-2",
+  "source": "https://github.com/purerl/package-sets.git",
+  "depends": [
+    "erl-atom",
+    "erl-lists",
+    "erl-tuples",
+    "maybe",
+    "prelude",
+    "transformers"
+  ]
 }
