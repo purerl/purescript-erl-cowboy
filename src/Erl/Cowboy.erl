@@ -1,9 +1,5 @@
 -module(erl_cowboy@foreign).
--export([compile/1,startHttp/3,string/1,toEnvValue/1]).
-
-compile(Routes) -> cowboy_router:compile(Routes).
-
-toEnvValue(X) -> X.
+-export([startHttp/3,string/1]).
 
 % TODO: start_clear in later 2.0-pre versions
 startHttp(NumAcceptors, TransOpts, ProtoOpts) -> fun () ->
