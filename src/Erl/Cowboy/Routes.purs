@@ -7,7 +7,7 @@ import Erl.Data.List (List)
 import Erl.Data.Tuple (Tuple2, Tuple3)
 
 type Routes a = List (Tuple2 Atom (Paths a))
-type Paths a = List (Tuple3 CharString Module a)
+type Paths a = List (Tuple3 String Module a)
 newtype Module = Module Atom
 
 mod :: String -> Module
@@ -15,7 +15,3 @@ mod = Module <<< atom
 
 foreign import data Dispatch :: Type
 foreign import compile :: forall a. Routes a -> Dispatch
-
--- TODO why???
-foreign import data CharString :: Type
-foreign import string :: String -> CharString
