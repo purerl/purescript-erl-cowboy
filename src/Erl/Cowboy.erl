@@ -1,6 +1,26 @@
 -module(erl_cowboy@foreign).
--export([startHttp/3]).
+-export([startClear/3, protocolOpts/1, env/1]).
 
-% TODO: start_clear in later 2.0-pre versions
-startHttp(NumAcceptors, TransOpts, ProtoOpts) -> fun () ->
-  cowboy:start_http(the_http_listener, NumAcceptors, TransOpts, ProtoOpts) end.
+startClear(Name, TransOpts, ProtoOpts) -> fun () ->
+  cowboy:start_clear(Name, TransOpts, ProtoOpts)
+end.
+
+protocolOpts(Opts) ->
+  lists:foldl(
+    fun ({env, E}, M) -> M#{env => E};
+        ({middlewares, X}, M) -> M#{middlewares => X};
+        (_, M) -> M
+    end,
+    #{},
+    Opts
+  ).
+
+env(Env) ->
+  lists:foldl(
+    fun ({dispatch, X}, M) -> M#{dispatch => X};
+        ({fn, X}, M) -> M#{fn => X};
+        (_, M) -> M
+    end,
+    #{},
+    Env
+  ).

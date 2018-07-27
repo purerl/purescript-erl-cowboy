@@ -1,7 +1,7 @@
 module Erl.Cowboy.Req where
 
 import Data.Maybe (Maybe(..))
-import Erl.Data.List (List)
+import Erl.Data.Map (Map)
 import Erl.Data.Tuple (Tuple2, Tuple4)
 
 foreign import data Req :: Type
@@ -12,7 +12,7 @@ foreign import ok :: Ok
 -- http_status() = non_neg_integer() | binary()
 newtype StatusCode = StatusCode Int
 
-type Headers = List (Tuple2 String String)
+type Headers = Map String String
 
 -- | Send the repply including the given body content
 foreign import reply :: StatusCode -> Headers -> String -> Req -> Req
