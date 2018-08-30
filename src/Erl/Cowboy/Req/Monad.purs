@@ -1,19 +1,44 @@
-module Erl.Cowboy.Req.Monad where
+module Erl.Cowboy.Req.Monad
+( reply
+, replyWithoutBody
+, replyStatus
+, streamReply
+, streamBody
+, streamBodyFinal
+, path
+, qs
+) where
 
 import Prelude
-import Erl.Cowboy.Req as Req
-import Control.Monad.State (State, get, modify, runState)
+
+import Control.Monad.State (get, put)
 import Control.Monad.State.Class (class MonadState)
-import Data.Tuple (Tuple(Tuple))
-import Erl.Cowboy.Handler (Handler)
-import Erl.Cowboy.Req (ok)
-import Erl.Data.Tuple (tuple3)
+import Effect (Effect)
+import Effect.Class (class MonadEffect, liftEffect)
+import Erl.Cowboy.Req as Req
+import Erl.Data.Binary (Binary)
 
-reply :: forall m. (MonadState Req.Req m) => Req.StatusCode -> Req.Headers -> String -> m Unit
-reply s h b = void $ modify (Req.reply s h b)
+-- Like modify_ but with an effectful modification
+modifyEffect_ :: forall s m. MonadState s m => MonadEffect m => (s -> Effect s) -> m Unit
+modifyEffect_ f = get >>= (liftEffect <<< f) >>= put
 
-replyWithoutBody :: forall m. (MonadState Req.Req m) => Req.StatusCode -> Req.Headers -> m Unit
-replyWithoutBody s h = void $ modify (Req.replyWithoutBody s h)
+reply :: forall m. MonadState Req.Req m => MonadEffect m  => Req.StatusCode -> Req.Headers -> String -> m Unit
+reply s h b = modifyEffect_ (Req.reply s h b)
+
+replyWithoutBody :: forall m. MonadState Req.Req m => MonadEffect m => Req.StatusCode -> Req.Headers -> m Unit
+replyWithoutBody s h = modifyEffect_ (Req.replyWithoutBody s h)
+
+replyStatus :: forall m. MonadState Req.Req m => MonadEffect m => Req.StatusCode -> m Unit
+replyStatus s = modifyEffect_ (Req.replyStatus s)
+
+streamReply :: forall m. MonadState Req.Req m => MonadEffect m  => Req.StatusCode -> Req.Headers -> m Unit
+streamReply s h = modifyEffect_ (Req.streamReply s h)
+
+streamBody :: forall m. MonadState Req.Req m => MonadEffect m  => Binary -> m Unit
+streamBody b = get >>= (liftEffect <<< Req.streamBody b)
+
+streamBodyFinal :: forall m. MonadState Req.Req m => MonadEffect m  => Binary -> m Unit
+streamBodyFinal b = get >>= (liftEffect <<< Req.streamBodyFinal b)
 
 path :: forall m. (MonadState Req.Req m) => m String
 path = Req.path <$> get
@@ -21,8 +46,3 @@ path = Req.path <$> get
 qs :: forall m. (MonadState Req.Req m) => m String
 qs = Req.qs <$> get
 
--- | Construct a handler that does not use Cowboy's state parameter
-handler :: forall a s. (State Req.Req s) -> Handler a
-handler e req a =
-  case runState e req of
-    Tuple _ s -> tuple3 ok s a

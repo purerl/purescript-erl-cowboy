@@ -1,13 +1,11 @@
 -module(erl_cowboy_req@foreign).
--export([ok/0,reply/4,replyWithoutBody/3,replyStatus/2,method/1,versionImpl/4,scheme/1,host/1,port/1,path/1,qs/1,headerImpl/4,headers/1,setHeader/3,setBody/2, setCookie/3, peer/1]).
+-export([reply/4,replyWithoutBody/3,replyStatus/2,method/1,versionImpl/4,scheme/1,host/1,port/1,path/1,qs/1,headerImpl/4,headers/1,setHeader/3,setBody/2, setCookie/3, peer/1, readBodyImpl/3, streamReply/3, streamBody/2, streamBodyFinal/2]).
 
-ok() -> ok.
+reply(Status, Headers, Body, Req) -> fun () -> cowboy_req:reply(Status, Headers, Body, Req) end.
 
-reply(Status, Headers, Body, Req) -> cowboy_req:reply(Status, Headers, Body, Req).
+replyWithoutBody(Status, Headers, Req) -> fun () -> cowboy_req:reply(Status, Headers, Req) end.
 
-replyWithoutBody(Status, Headers, Req) -> cowboy_req:reply(Status, Headers, Req).
-
-replyStatus(Status, Req) -> cowboy_req:reply(Status, Req).
+replyStatus(Status, Req) -> fun () -> cowboy_req:reply(Status, Req) end.
 
 method(Req) -> cowboy_req:method(Req).
 
@@ -41,3 +39,16 @@ setCookie(Name, Value, Req) -> cowboy_req:set_resp_cookie(Name, Value, Req).
 setBody(Body, Req) -> cowboy_req:set_resp_body(Body, Req).
 
 peer(Req) -> cowboy_req:peer(Req).
+
+readBodyImpl(FullData, PartialData, Req) ->
+  case cowboy_req:read_body(Req) of
+    {ok, D, Req2} -> (FullData(D))(Req2);
+    {more, D, Req2} -> (PartialData(D))(Req2)
+  end.
+
+streamReply(Status, Headers, Req) -> fun () ->
+  cowboy_req:stream_reply(Status, Headers, Req)
+end.
+
+streamBody(Data, Req) -> fun () -> cowboy_req:stream_body(Data, nofin, Req) end.
+streamBodyFinal(Data, Req) -> fun () -> cowboy_req:stream_body(Data, fin, Req) end.

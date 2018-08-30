@@ -1,27 +1,54 @@
-module Erl.Cowboy.Req where
+module Erl.Cowboy.Req 
+  ( StatusCode(..)
+  , Headers
+  , Req
+  , reply
+  , replyWithoutBody
+  , replyStatus
+  , method
+  , Version(..)
+  , version
+  , scheme
+  , host
+  , port
+  , path
+  , qs
+  , header
+  , headers
+  , ReadBodyResult
+  , readBody
+  , setHeader
+  , setBody
+  , IpAddress
+  , peer
+  , streamReply
+  , streamBody
+  , streamBodyFinal
+  ) where
+
+import Prelude
 
 import Data.Maybe (Maybe(..))
+import Effect (Effect)
+import Erl.Data.Binary (Binary)
 import Erl.Data.Map (Map)
 import Erl.Data.Tuple (Tuple2, Tuple4)
 
 foreign import data Req :: Type
-
-foreign import data Ok :: Type
-foreign import ok :: Ok
 
 -- http_status() = non_neg_integer() | binary()
 newtype StatusCode = StatusCode Int
 
 type Headers = Map String String
 
--- | Send the repply including the given body content
-foreign import reply :: StatusCode -> Headers -> String -> Req -> Req
+-- | Send the reply including the given body content (cowboy_req:reply/4)
+foreign import reply :: StatusCode -> Headers -> String -> Req -> Effect Req
 
--- | Send the reply without setting the body
-foreign import replyWithoutBody :: StatusCode -> Headers -> Req -> Req
+-- | Send the reply without setting the body (cowboy_req:reply/3)
+foreign import replyWithoutBody :: StatusCode -> Headers -> Req -> Effect Req
 
--- | Send the reply with already set headers and body
-foreign import replyStatus :: StatusCode -> Req -> Req
+-- | Send the reply with already set headers and body (cowboy_req:reply/2)
+foreign import replyStatus :: StatusCode -> Req -> Effect Req
 
 -- Raw request
 
@@ -53,12 +80,34 @@ header = headerImpl Nothing Just
 
 foreign import headers :: Req -> Headers
 
+-- Reading the body
+
+data ReadBodyResult = FullData Binary Req | PartialData Binary Req
+
+foreign import readBodyImpl :: (Binary -> Req -> ReadBodyResult) -> (Binary -> Req -> ReadBodyResult) -> Req -> Effect ReadBodyResult
+
+readBody :: Req -> Effect ReadBodyResult
+readBody = readBodyImpl FullData PartialData
+
+-- Writing a response
+
 foreign import setHeader :: String -> String -> Req -> Req
 
 foreign import setCookie :: String -> String -> Req -> Req
 
+-- | Set response body. As should be apparent from the type, this does not actually send the body but merely sets it in the Req, 
+-- | the body is sent once reply is called.
 foreign import setBody :: String -> Req -> Req
 
 type IpAddress = Tuple4 Int Int Int Int
 
 foreign import peer :: Req -> Tuple2 IpAddress Int
+
+-- Streaming responses
+
+foreign import streamReply :: StatusCode -> Headers -> Req -> Effect Req
+
+-- TODO: binary/iolist ?
+foreign import streamBody :: Binary -> Req -> Effect Unit
+
+foreign import streamBodyFinal :: Binary -> Req -> Effect Unit
