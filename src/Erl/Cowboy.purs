@@ -1,3 +1,8 @@
+-- | Bindings for `cowboy`.
+-- |
+-- | To construct a working cowboy application, the definitions here can be used with 
+-- | routing defined in `Erl.Cowboy.Routes`, and one of the handlers defind in submodules of
+-- | `Erl.Cowboy.Handlers`. Core request processing is handled in `Erl.Cowboy.Req`.
 module Erl.Cowboy (
   TransOpt(..),
   ProtoOpt(..),

@@ -1,3 +1,4 @@
+-- | Bindings for cowboy_router
 module Erl.Cowboy.Routes where
 
 import Prelude

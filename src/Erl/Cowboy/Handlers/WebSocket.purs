@@ -1,4 +1,22 @@
 -- | Types and helpers for a cowboy_websocket Websockets callback module
+-- |
+-- | See `Erl.Cowboy.Handlers`.
+-- |
+-- | Example:
+-- | ```purescript
+-- | _behaviour :: CowboyWebsocketBehaviour
+-- | _behaviour = cowboyWebsocketBehaviour { init, websocket_handle, websocket_info }
+-- | 
+-- | data Config
+-- | data HandlerState
+-- |
+-- | init :: InitHandler Config HandlerState
+-- | init = ...
+-- | websocket_handle :: FrameHandler HandlerState 
+-- | websocket_handle = ...
+-- | websocket_info :: InfoHandler HandlerState
+-- | websocket_info = ...
+-- | ```
 module Erl.Cowboy.Handlers.WebSocket (
   InitResult
 , InitHandler
@@ -25,8 +43,11 @@ module Erl.Cowboy.Handlers.WebSocket (
 , RawTerminateReason
 , decodeReason
 , PartialReq
+, CowboyWebsocketBehaviour
+, cowboyWebsocketBehaviour
 ) where
 
+import Attribute (Attribute(..), Behaviour)
 import Data.Function.Uncurried (Fn4, mkFn4)
 import Data.Maybe (Maybe(..))
 import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3)
@@ -150,3 +171,12 @@ decodeReason :: RawTerminateReason -> TerminateReason
 decodeReason = decodeReasonImpl Normal Remote Just Nothing RemotePayload Stop Timeout Crash C.Error C.Exit C.Throw Error BadEncoding BadFrame Closed OtherError
 
 type TerminateHandler s = EffectFn3 TerminateReason PartialReq s C.TerminateResult
+
+type CowboyWebsocketBehaviour = Behaviour "cowboy_websocket"
+
+cowboyWebsocketBehaviour :: forall a s.
+  { init :: InitHandler a s
+  , websocket_handle :: FrameHandler s
+  , websocket_info :: InfoHandler s
+  } -> CowboyWebsocketBehaviour
+cowboyWebsocketBehaviour _ = Attribute

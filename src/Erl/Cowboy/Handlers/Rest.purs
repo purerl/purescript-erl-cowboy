@@ -1,11 +1,8 @@
 module Erl.Cowboy.Handlers.Rest
---   ( InitResult
---   , initResult
---   , InitHandler
---   , module C
--- ) 
+
 where
 
+import Attribute (Attribute(..), Behaviour)
 import Effect.Uncurried (EffectFn2, EffectFn3)
 import Erl.Atom (Atom)
 import Erl.Cowboy.Handlers.Common (CrashType(..), RawReason, TerminateReason(..), TerminateResult, decodeReason, terminateResult) as C
@@ -158,3 +155,11 @@ type ValidEntityLengthHandler s = RestHandler Boolean s
 
 -- | Handler for variances callback
 type VariancesHandler s = RestHandler (List String) s
+
+type CowboyRestBehaviour = Behaviour "cowboy_rest"
+
+-- | A cowboy_rest behaviour. Note that while may callbacks are defined only init is mandatory
+cowboyRestBehaviour :: forall a s.
+  { init :: InitHandler a s
+  } -> CowboyRestBehaviour
+cowboyRestBehaviour _ = Attribute
