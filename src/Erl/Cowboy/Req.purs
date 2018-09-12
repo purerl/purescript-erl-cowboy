@@ -1,3 +1,9 @@
+-- | Bindings for cowboy_req
+-- |
+-- | The `Req` type (corresponding to `req()`) is core to the use of cowboy, containing information about request and response.
+-- | Many functions operating on `Req` are pure, producing an updated `Req` if required to update some fields, e.g. when setting a
+-- | header, but others produce a result in `Effect` as even though they may update the `Req`, they also cause side-effects such as
+-- | sending traffic on the network (eg `reply`).
 module Erl.Cowboy.Req 
   ( StatusCode(..)
   , Headers

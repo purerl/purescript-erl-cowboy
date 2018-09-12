@@ -5,7 +5,7 @@ where
 import Attribute (Attribute(..), Behaviour)
 import Effect.Uncurried (EffectFn2, EffectFn3)
 import Erl.Atom (Atom)
-import Erl.Cowboy.Handlers.Common (CrashType(..), RawReason, TerminateReason(..), TerminateResult, decodeReason, terminateResult) as C
+import Erl.Cowboy.Handlers.Common as C
 import Erl.Cowboy.Req (Req)
 import Erl.Cowboy.Routes (Module)
 import Erl.Data.List (List)
