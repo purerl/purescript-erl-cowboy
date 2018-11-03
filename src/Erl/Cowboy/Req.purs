@@ -15,6 +15,8 @@ module Erl.Cowboy.Req
   , Version(..)
   , version
   , scheme
+  , binding
+  , bindingWithDefault
   , host
   , port
   , path
@@ -38,6 +40,7 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Erl.Data.Binary (Binary)
 import Erl.Data.Map (Map)
+import Erl.Atom (Atom, atom)
 import Erl.Data.Tuple (Tuple2, Tuple4)
 
 foreign import data Req :: Type
@@ -68,6 +71,13 @@ version :: Req -> Version
 version = versionImpl HTTP1_0 HTTP1_1 HTTP2
 
 foreign import scheme :: Req -> String
+
+foreign import bindingWithDefault :: forall a. Atom -> Req -> a -> a
+
+foreign import bindingImpl :: forall a. (Maybe a) -> (a -> Maybe a) -> Atom -> Req -> Maybe a
+
+binding :: forall a. Atom -> Req -> Maybe a
+binding = bindingImpl Nothing Just 
 
 foreign import host :: Req -> String
 
