@@ -23,7 +23,7 @@ module Erl.Cowboy.Req
   , qs
   , header
   , headers
-  , ReadBodyResult
+  , ReadBodyResult(..)
   , readBody
   , setHeader
   , setBody
