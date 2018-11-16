@@ -50,9 +50,10 @@ setBody(Body, Req) -> cowboy_req:set_resp_body(Body, Req).
 peer(Req) -> cowboy_req:peer(Req).
 
 readBodyImpl(FullData, PartialData, Req) ->
-  case cowboy_req:read_body(Req) of
-    {ok, D, Req2} -> (FullData(D))(Req2);
-    {more, D, Req2} -> (PartialData(D))(Req2)
+  fun() -> case cowboy_req:read_body(Req) of
+      {ok, D, Req2} -> (FullData(D))(Req2);
+      {more, D, Req2} -> (PartialData(D))(Req2)
+    end
   end.
 
 streamReply(Status, Headers, Req) -> fun () ->
