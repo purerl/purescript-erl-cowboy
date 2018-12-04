@@ -122,7 +122,7 @@ type WSInitHandler s = EffectFn1 s (CallResult s)
 type FrameHandler s = EffectFn2 InFrame s (CallResult s)
 
 -- | Handler for erlang info messages - websocket_info()
-type InfoHandler s = forall a. EffectFn2 a s (CallResult s)
+type InfoHandler a s = EffectFn2 a s (CallResult s)
 
 -- | Cowboy does not provide the full Req object to terminate, so currently completely opaque
 foreign import data PartialReq :: Type
