@@ -1,6 +1,6 @@
 {
   "name": "purescript-erl-cowboy",
-  "set": "erl-0.12.0-20180830",
+  "set": "erl-0.12.1-20181205",
   "source": "https://github.com/purerl/package-sets.git",
   "depends": [
     "erl-atom",
@@ -8,6 +8,8 @@
     "erl-lists",
     "erl-maps",
     "erl-tuples",
+    "erl-modules",
+    "foreign",
     "maybe",
     "prelude",
     "transformers"

@@ -7,9 +7,9 @@ import Effect.Uncurried (EffectFn2, EffectFn3)
 import Erl.Atom (Atom)
 import Erl.Cowboy.Handlers.Common as C
 import Erl.Cowboy.Req (Req)
-import Erl.Cowboy.Routes (Module)
 import Erl.Data.List (List)
 import Erl.Data.Tuple (Tuple2)
+import Erl.ModuleName (NativeModuleName(..))
 
 foreign import data InitResult :: Type -> Type
 
@@ -26,7 +26,7 @@ foreign import restResult :: forall r s. r -> s -> Req -> RestResult r s
 
 foreign import stop :: forall r s. s -> Req -> RestResult r s
 
-foreign import switchHandler :: forall r s. Module -> s -> Req -> RestResult r s
+foreign import switchHandler :: forall r s. NativeModuleName -> s -> Req -> RestResult r s
 
 type RestHandler r s = EffectFn2 Req s (RestResult r s)
 

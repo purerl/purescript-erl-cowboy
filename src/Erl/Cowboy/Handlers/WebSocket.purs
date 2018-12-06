@@ -174,9 +174,9 @@ type TerminateHandler s = EffectFn3 TerminateReason PartialReq s C.TerminateResu
 
 type CowboyWebsocketBehaviour = Behaviour "cowboy_websocket"
 
-cowboyWebsocketBehaviour :: forall a s.
+cowboyWebsocketBehaviour :: forall a i s.
   { init :: InitHandler a s
   , websocket_handle :: FrameHandler s
-  , websocket_info :: InfoHandler s
+  , websocket_info :: InfoHandler i s
   } -> CowboyWebsocketBehaviour
 cowboyWebsocketBehaviour _ = Attribute
