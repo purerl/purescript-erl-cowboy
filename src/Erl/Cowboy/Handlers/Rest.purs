@@ -39,7 +39,7 @@ type AllowedMissingPostHandler s = RestHandler Boolean s
 -- | Handler for charsets_provided callback
 type CharsetsProvidedHandler s = RestHandler (List String) s
 
-data ContentType = ContentType String String ContentTypeParams
+data ContentType = ContentType String String ContentTypeParams | SimpleContentType String
 
 data ContentTypeParams = AnyParams | ContentTypeParams (List (Tuple2 String String))
 

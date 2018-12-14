@@ -9,7 +9,10 @@ stop(S, Req) -> {stop, Req, S}.
 
 switchHandler(Module, State, Req) -> {{switch_handler, Module}, Req, State}.
 
-convertContentType({{_, T, ST, Params}, CB}) ->
+convertContentType({{simpleContentType, ContentType}, CB}) ->
+  {ContentType, CB};
+
+convertContentType({{contentType, T, ST, Params}, CB}) ->
     Params1 = case Params of
         {anyParams} -> '*';
         {contentTypeParams, ActualParams} -> ActualParams
