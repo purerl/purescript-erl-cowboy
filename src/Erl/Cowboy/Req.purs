@@ -40,7 +40,7 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Erl.Data.Binary (Binary)
 import Erl.Data.Map (Map)
-import Erl.Atom (Atom, atom)
+import Erl.Atom (Atom)
 import Erl.Data.Tuple (Tuple2, Tuple4)
 
 foreign import data Req :: Type

@@ -9,7 +9,7 @@ import Erl.Cowboy.Handlers.Common as C
 import Erl.Cowboy.Req (Req)
 import Erl.Data.List (List)
 import Erl.Data.Tuple (Tuple2)
-import Erl.ModuleName (NativeModuleName(..))
+import Erl.ModuleName (NativeModuleName)
 
 foreign import data InitResult :: Type -> Type
 
