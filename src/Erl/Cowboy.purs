@@ -26,7 +26,10 @@ import Erl.ModuleName (NativeModuleName)
 foreign import startClear :: Atom -> List TransOpt -> ProtocolOpts -> Effect Unit
 
 data TransOpt = Ip (Tuple4 Int Int Int Int) | Port Int
-data ProtoOpt = Env ProtocolEnv | Middlewares (List NativeModuleName)
+data ProtoOpt
+  = Env ProtocolEnv
+  | Middlewares (List NativeModuleName)
+  | StreamHandlers (List NativeModuleName)
 data ProtoEnv = Dispatch Dispatch | Fn (Effect Unit)
 
 foreign import data ProtocolOpts :: Type

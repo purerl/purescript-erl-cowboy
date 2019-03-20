@@ -9,6 +9,7 @@ protocolOpts(Opts) ->
   lists:foldl(
     fun ({env, E}, M) -> M#{env => E};
         ({middlewares, X}, M) -> M#{middlewares => X};
+        ({streamHandlers, X}, M) -> M#{stream_handlers => X};
         (_, M) -> M
     end,
     #{},
