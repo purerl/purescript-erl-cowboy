@@ -12,7 +12,7 @@ method(Req) -> cowboy_req:method(Req).
 versionImpl(V10, V11, V20, Req) -> case cowboy_req:version(Req) of
   'HTTP/1.0' -> V10;
   'HTTP/1.1' -> V11;
-  'HTTP/2.0' -> V20
+  'HTTP/2' -> V20
 end.
 
 scheme(Req) -> cowboy_req:scheme(Req).
