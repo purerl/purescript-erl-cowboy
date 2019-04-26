@@ -17,6 +17,7 @@ module Erl.Cowboy.Req
   , scheme
   , binding
   , bindingWithDefault
+  , pathInfo
   , host
   , port
   , path
@@ -38,9 +39,10 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
-import Erl.Data.Binary (Binary)
-import Erl.Data.Map (Map)
 import Erl.Atom (Atom)
+import Erl.Data.Binary (Binary)
+import Erl.Data.List (List)
+import Erl.Data.Map (Map)
 import Erl.Data.Tuple (Tuple2, Tuple4)
 
 foreign import data Req :: Type
@@ -78,6 +80,8 @@ foreign import bindingImpl :: forall a. (Maybe a) -> (a -> Maybe a) -> Atom -> R
 
 binding :: forall a. Atom -> Req -> Maybe a
 binding = bindingImpl Nothing Just 
+
+foreign import pathInfo :: Req -> List String
 
 foreign import host :: Req -> String
 
