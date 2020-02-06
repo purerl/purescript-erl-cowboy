@@ -8,33 +8,38 @@ module Erl.Cowboy (
   ProtoOpt(..),
   ProtocolOpts,
   protocolOpts,
-  ProtoEnv(..),
-  ProtocolEnv,
-  env,
+  dispatch,
+  Env,
   startClear
 ) where
 
 import Prelude
 
 import Effect (Effect)
-import Erl.Atom (Atom)
+import Erl.Atom (Atom, atom)
 import Erl.Cowboy.Routes (Dispatch)
 import Erl.Data.List (List)
+import Erl.Data.Map (Map)
+import Erl.Data.Map as Map
 import Erl.Data.Tuple (Tuple4)
 import Erl.ModuleName (NativeModuleName)
+import Foreign (Foreign)
+import Foreign as Foreign
 
 foreign import startClear :: Atom -> List TransOpt -> ProtocolOpts -> Effect Unit
 
+type Env = Map Atom Foreign
+
 data TransOpt = Ip (Tuple4 Int Int Int Int) | Port Int
 data ProtoOpt
-  = Env ProtocolEnv
+  = Env Env
   | Middlewares (List NativeModuleName)
   | StreamHandlers (List NativeModuleName)
-data ProtoEnv = Dispatch Dispatch | Fn (Effect Unit)
+
+dispatch :: Dispatch -> Env -> Env
+dispatch = Map.insert (atom "dispatch") <<< Foreign.unsafeToForeign
 
 foreign import data ProtocolOpts :: Type
 
 foreign import protocolOpts :: List ProtoOpt -> ProtocolOpts
 
-foreign import data ProtocolEnv :: Type
-foreign import env :: List ProtoEnv -> ProtocolEnv
