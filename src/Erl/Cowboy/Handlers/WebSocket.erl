@@ -29,7 +29,7 @@ decodeReasonImpl(Normal,
         BadFrame,
         Closed,
         OtherError,
-    Reason) -> 
+    Reason) ->
     case Reason of
         normal -> Normal;
         remote -> Remote(Nothing);
@@ -50,7 +50,9 @@ decodeInFrameImpl(Text, Binary, Ping, Pong, Frame) ->
         {text, B} -> Text(B);
         {binary, B} -> Binary(B);
         {ping, B} -> Ping(B);
-        {pong, B} -> Pong(B)
+        {pong, B} -> Pong(B);
+        ping -> Ping(<<>>);
+        pong -> Pong(<<>>)
     end.
 
 encodeOutFrameImpl(FromFrame) ->
