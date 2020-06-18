@@ -1,6 +1,6 @@
 -- | Bindings for `cowboy`.
 -- |
--- | To construct a working cowboy application, the definitions here can be used with 
+-- | To construct a working cowboy application, the definitions here can be used with
 -- | routing defined in `Erl.Cowboy.Routes`, and one of the handlers defind in submodules of
 -- | `Erl.Cowboy.Handlers`. Core request processing is handled in `Erl.Cowboy.Req`.
 module Erl.Cowboy (
@@ -10,11 +10,13 @@ module Erl.Cowboy (
   protocolOpts,
   dispatch,
   Env,
-  startClear
+  startClear,
+  stopListener
 ) where
 
 import Prelude
 
+import Data.Either (Either)
 import Effect (Effect)
 import Erl.Atom (Atom, atom)
 import Erl.Cowboy.Routes (Dispatch)
@@ -26,7 +28,9 @@ import Erl.ModuleName (NativeModuleName)
 import Foreign (Foreign)
 import Foreign as Foreign
 
-foreign import startClear :: Atom -> List TransOpt -> ProtocolOpts -> Effect Unit
+foreign import startClear :: Atom -> List TransOpt -> ProtocolOpts -> Effect (Either Foreign Unit)
+
+foreign import stopListener :: Atom -> Effect Unit
 
 type Env = Map Atom Foreign
 
@@ -42,4 +46,3 @@ dispatch = Map.insert (atom "dispatch") <<< Foreign.unsafeToForeign
 foreign import data ProtocolOpts :: Type
 
 foreign import protocolOpts :: List ProtoOpt -> ProtocolOpts
-

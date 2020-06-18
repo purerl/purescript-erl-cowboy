@@ -1,9 +1,19 @@
 -module(erl_cowboy@foreign).
--export([startClear/3, protocolOpts/1, env/1]).
+-export([startClear/3, stopListener/1, protocolOpts/1, env/1]).
 
-startClear(Name, TransOpts, ProtoOpts) -> fun () ->
-  cowboy:start_clear(Name, TransOpts, ProtoOpts)
-end.
+startClear(Name, TransOpts, ProtoOpts) ->
+  fun () ->
+      case cowboy:start_clear(Name, TransOpts, ProtoOpts) of
+        {ok, _Pid} -> {right, unit};
+        {error, Reason} -> {left, Reason}
+      end
+  end.
+
+stopListener(Name) ->
+  fun() ->
+      cowboy:stop_listener(Name),
+      unit
+  end.
 
 protocolOpts(Opts) ->
   lists:foldl(
