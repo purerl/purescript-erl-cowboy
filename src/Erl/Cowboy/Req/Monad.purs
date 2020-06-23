@@ -1,6 +1,7 @@
 module Erl.Cowboy.Req.Monad
 ( reply
 , replyWithoutBody
+, replyWithFile
 , replyStatus
 , streamReply
 , streamBody
@@ -27,6 +28,9 @@ reply s h b = modifyEffect_ (Req.reply s h b)
 
 replyWithoutBody :: forall m. MonadState Req.Req m => MonadEffect m => Req.StatusCode -> Req.Headers -> m Unit
 replyWithoutBody s h = modifyEffect_ (Req.replyWithoutBody s h)
+
+replyWithFile :: forall m. MonadState Req.Req m => MonadEffect m => Req.StatusCode -> Req.Headers -> String -> m Unit
+replyWithFile s h f = modifyEffect_ (Req.replyWithFile s h f)
 
 replyStatus :: forall m. MonadState Req.Req m => MonadEffect m => Req.StatusCode -> m Unit
 replyStatus s = modifyEffect_ (Req.replyStatus s)

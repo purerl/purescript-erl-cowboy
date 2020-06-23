@@ -10,6 +10,7 @@ module Erl.Cowboy.Req
   , Req
   , reply
   , replyWithoutBody
+  , replyWithFile
   , replyStatus
   , method
   , Version(..)
@@ -57,6 +58,9 @@ foreign import reply :: StatusCode -> Headers -> String -> Req -> Effect Req
 
 -- | Send the reply without setting the body (cowboy_req:reply/3)
 foreign import replyWithoutBody :: StatusCode -> Headers -> Req -> Effect Req
+
+-- | Send the reply including a file as the body
+foreign import replyWithFile :: StatusCode -> Headers -> String -> Req -> Effect Req
 
 -- | Send the reply with already set headers and body (cowboy_req:reply/2)
 foreign import replyStatus :: StatusCode -> Req -> Effect Req
