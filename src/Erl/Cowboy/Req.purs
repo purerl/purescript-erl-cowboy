@@ -33,6 +33,7 @@ module Erl.Cowboy.Req
   , setBody
   , IpAddress
   , peer
+  , parseCookies
   , streamReply
   , streamBody
   , streamBodyFinal
@@ -135,6 +136,8 @@ foreign import setBody :: String -> Req -> Req
 type IpAddress = Tuple4 Int Int Int Int
 
 foreign import peer :: Req -> Tuple2 IpAddress Int
+
+foreign import parseCookies :: Req -> List (Tuple2 String String)
 
 -- Streaming responses
 
