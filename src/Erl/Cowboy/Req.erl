@@ -1,5 +1,5 @@
 -module(erl_cowboy_req@foreign).
--export([reply/4,replyWithoutBody/3,replyStatus/2,method/1,versionImpl/4,scheme/1,bindingWithDefault/3,bindingImpl/4,pathInfo/1,host/1,port/1,path/1,qs/1,headerImpl/4,headers/1,setHeader/3,setBody/2, setCookie/3, peer/1, readBodyImpl/3, streamReply/3, streamBody/2, streamBodyFinal/2]).
+-export([reply/4,replyWithoutBody/3,replyStatus/2,method/1,versionImpl/4,scheme/1,bindingWithDefault/3,bindingImpl/4,pathInfo/1,host/1,port/1,path/1,qs/1,headerImpl/4,headers/1,setHeader/3,setBody/2, setCookie/3, peer/1, readBodyImpl/3, readUrlEncodedBodyImpl/2, streamReply/3, streamBody/2, streamBodyFinal/2]).
 
 reply(Status, Headers, Body, Req) -> fun () -> cowboy_req:reply(Status, Headers, Body, Req) end.
 
@@ -56,6 +56,12 @@ readBodyImpl(FullData, PartialData, Req) ->
       {ok, D, Req2} -> (FullData(D))(Req2);
       {more, D, Req2} -> (PartialData(D))(Req2)
     end
+  end.
+
+readUrlEncodedBodyImpl(Result, Req) ->
+  fun() ->
+      {ok, Items, Req2 } = cowboy_req:read_urlencoded_body(Req),
+      (Result(Items))(Req2)
   end.
 
 streamReply(Status, Headers, Req) -> fun () ->

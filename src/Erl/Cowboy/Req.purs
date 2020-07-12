@@ -25,7 +25,9 @@ module Erl.Cowboy.Req
   , header
   , headers
   , ReadBodyResult(..)
+  , ReadUrlEncodedBodyResult(..)
   , readBody
+  , readUrlEncodedBody
   , setHeader
   , setBody
   , IpAddress
@@ -108,6 +110,16 @@ foreign import readBodyImpl :: (Binary -> Req -> ReadBodyResult) -> (Binary -> R
 
 readBody :: Req -> Effect ReadBodyResult
 readBody = readBodyImpl FullData PartialData
+
+
+-- and the helper for url encoded  body
+
+data ReadUrlEncodedBodyResult = UrlEncodedBody (List (Tuple2 String String)) Req
+
+foreign import readUrlEncodedBodyImpl :: ((List (Tuple2 String String)) -> Req -> ReadUrlEncodedBodyResult) ->  Req -> Effect ReadUrlEncodedBodyResult
+
+readUrlEncodedBody :: Req -> Effect ReadUrlEncodedBodyResult
+readUrlEncodedBody = readUrlEncodedBodyImpl UrlEncodedBody
 
 -- Writing a response
 
