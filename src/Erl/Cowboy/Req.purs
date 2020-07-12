@@ -28,6 +28,7 @@ module Erl.Cowboy.Req
   , ReadUrlEncodedBodyResult(..)
   , readBody
   , readUrlEncodedBody
+  , setCookie
   , setHeader
   , setBody
   , IpAddress
