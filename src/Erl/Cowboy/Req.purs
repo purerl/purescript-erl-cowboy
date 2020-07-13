@@ -25,11 +25,15 @@ module Erl.Cowboy.Req
   , header
   , headers
   , ReadBodyResult(..)
+  , ReadUrlEncodedBodyResult(..)
   , readBody
+  , readUrlEncodedBody
+  , setCookie
   , setHeader
   , setBody
   , IpAddress
   , peer
+  , parseCookies
   , streamReply
   , streamBody
   , streamBodyFinal
@@ -109,6 +113,16 @@ foreign import readBodyImpl :: (Binary -> Req -> ReadBodyResult) -> (Binary -> R
 readBody :: Req -> Effect ReadBodyResult
 readBody = readBodyImpl FullData PartialData
 
+
+-- and the helper for url encoded  body
+
+data ReadUrlEncodedBodyResult = UrlEncodedBody (List (Tuple2 String String)) Req
+
+foreign import readUrlEncodedBodyImpl :: ((List (Tuple2 String String)) -> Req -> ReadUrlEncodedBodyResult) ->  Req -> Effect ReadUrlEncodedBodyResult
+
+readUrlEncodedBody :: Req -> Effect ReadUrlEncodedBodyResult
+readUrlEncodedBody = readUrlEncodedBodyImpl UrlEncodedBody
+
 -- Writing a response
 
 foreign import setHeader :: String -> String -> Req -> Req
@@ -122,6 +136,8 @@ foreign import setBody :: String -> Req -> Req
 type IpAddress = Tuple4 Int Int Int Int
 
 foreign import peer :: Req -> Tuple2 IpAddress Int
+
+foreign import parseCookies :: Req -> List (Tuple2 String String)
 
 -- Streaming responses
 
