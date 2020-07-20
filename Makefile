@@ -1,12 +1,12 @@
 .PHONY: ps erl all test
 
-all: ps erl
+all: erl
 
 test: erl
 
 ps:
 	spago  build
 
-erl:
+erl: ps
 	mkdir -p ebin
 	erlc -o ebin/ output/*/*.erl
