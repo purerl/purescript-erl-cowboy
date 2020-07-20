@@ -2,14 +2,10 @@
 
 all: ps erl
 
-ide:
-	psc-package sources | xargs purs compile 'src/**/*.purs' --json-errors
+test: erl
 
 ps:
-	psc-package sources | xargs purs compile 'src/**/*.purs'
-
-test: ps erl
-	erl -pa ebin -noshell -eval '(test_main@ps:main())()' -eval 'init:stop()'
+	spago  build
 
 erl:
 	mkdir -p ebin
