@@ -57,11 +57,20 @@ setBody(Body, Req) -> cowboy_req:set_resp_body(Body, Req).
 
 peer(Req) -> cowboy_req:peer(Req).
 
+parseCookies(Req) ->
+  cowboy_req:parse_cookies(Req).
+
 readBodyImpl(FullData, PartialData, Req) ->
   fun() -> case cowboy_req:read_body(Req) of
       {ok, D, Req2} -> (FullData(D))(Req2);
       {more, D, Req2} -> (PartialData(D))(Req2)
     end
+  end.
+
+readUrlEncodedBodyImpl(Result, Req) ->
+  fun() ->
+      {ok, Items, Req2 } = cowboy_req:read_urlencoded_body(Req),
+      (Result(Items))(Req2)
   end.
 
 streamReply(Status, Headers, Req) -> fun () ->
