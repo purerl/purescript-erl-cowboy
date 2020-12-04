@@ -1,8 +1,8 @@
-.PHONY: ps erl all test
+.PHONY: ci all ps erl
+
+ci: all
 
 all: erl
-
-test: erl
 
 ps:
 	spago  build

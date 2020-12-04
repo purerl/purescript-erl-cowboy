@@ -1,0 +1,17 @@
+name: build
+
+on:
+  pull_request:
+  push:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: cachix/install-nix-action@v12
+    - uses: actions/cache@v2
+      with:
+        path: |
+          output
+        key: ${{ runner.os }}-build-products
+    - run: nix-shell --run 'make ci'
