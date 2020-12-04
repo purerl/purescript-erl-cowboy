@@ -1,6 +1,6 @@
 -module(erl_cowboy_req@foreign).
 
--export([reply/4,replyWithoutBody/3,replyWithFile/4,replyStatus/2,method/1,versionImpl/4,scheme/1,bindingWithDefault/3,bindingImpl/4,pathInfo/1,host/1,port/1,path/1,qs/1,headerImpl/4,headers/1,setHeader/3,setBody/2, setCookie/3, setCookieWitOpts/4, peer/1, readBodyImpl/3, readUrlEncodedBodyImpl/2, streamReply/3, streamBody/2, streamBodyFinal/2, parseCookies/1]).
+-export([reply/4,replyWithoutBody/3,replyWithFile/4,replyStatus/2,method/1,versionImpl/4,scheme/1,bindingWithDefault/3,bindingImpl/4,pathInfo/1,host/1,port/1,path/1,qs/1,headerImpl/4,headers/1,setHeader/3,setBody/2, setCookie/3, setCookieWithOpts/4, peer/1, readBodyImpl/3, readUrlEncodedBodyImpl/2, streamReply/3, streamBody/2, streamBodyFinal/2, parseCookies/1]).
 -include_lib("kernel/include/file.hrl").
 
 reply(Status, Headers, Body, Req) -> fun () -> cowboy_req:reply(Status, Headers, Body, Req) end.
