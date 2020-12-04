@@ -29,6 +29,8 @@ module Erl.Cowboy.Req
   , readBody
   , readUrlEncodedBody
   , setCookie
+  , setCookieWithOpts
+  , CookieOpts(..)
   , setHeader
   , setBody
   , IpAddress
@@ -125,9 +127,20 @@ readUrlEncodedBody = readUrlEncodedBodyImpl UrlEncodedBody
 
 -- Writing a response
 
+-- See: cow_cookie:cookie_option()
+type CookieOpts = { max_age :: Int
+                  , domain :: String
+                  , path :: String
+                  , secure :: Boolean
+                  , http_only :: Boolean
+                  , same_site :: Atom
+                  }
+
 foreign import setHeader :: String -> String -> Req -> Req
 
 foreign import setCookie :: String -> String -> Req -> Req
+
+foreign import setCookieWithOpts :: String -> String -> CookieOpts -> Req -> Req
 
 -- | Set response body. As should be apparent from the type, this does not actually send the body but merely sets it in the Req, 
 -- | the body is sent once reply is called.
