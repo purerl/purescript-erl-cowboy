@@ -1,6 +1,6 @@
 # purescript-erl-cowboy
 
-Bindings to the [cowboy](https://github.com/ninenines/cowboy) web server. Bindings tested at version `2.4`.
+Bindings to the [cowboy](https://github.com/ninenines/cowboy) web server. Bindings currently tested against version `2.8`, but other versions may be used subject to underlying cowboy API compatibility.
 
 
 ## Usage
