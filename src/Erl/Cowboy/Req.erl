@@ -1,5 +1,5 @@
 -module(erl_cowboy_req@foreign).
--export([reply/4,replyWithoutBody/3,replyStatus/2,method/1,versionImpl/4,scheme/1,bindingWithDefault/3,bindingImpl/4,pathInfo/1,host/1,port/1,path/1,qs/1,headerImpl/4,headers/1,setHeader/3,setBody/2, setCookie/3, peer/1, readBodyImpl/3, streamReply/3, streamBody/2, streamBodyFinal/2]).
+-export([reply/4,replyWithoutBody/3,replyStatus/2,method/1,versionImpl/4,scheme/1,bindingWithDefault/3,bindingImpl/4,pathInfo/1,host/1,port/1,path/1,qs/1,headerImpl/4,headers/1,setHeader/3,setBody/2, setCookie/3, peer/1, readBodyImpl/3, streamReply/3, streamBody/2, streamBodyFinal/2, setIdleTimeout_/2]).
 
 reply(Status, Headers, Body, Req) -> fun () -> cowboy_req:reply(Status, Headers, Body, Req) end.
 
@@ -64,3 +64,9 @@ end.
 
 streamBody(Data, Req) -> fun () -> cowboy_req:stream_body(Data, nofin, Req) end.
 streamBodyFinal(Data, Req) -> fun () -> cowboy_req:stream_body(Data, fin, Req) end.
+
+setIdleTimeout_(Timeout, #{pid := Pid, streamid := StreamID}) ->
+  fun() ->
+      Pid ! {{Pid, StreamID}, {set_options, #{idle_timeout => Timeout}}},
+      unit
+  end.
