@@ -8,7 +8,6 @@ module Erl.Cowboy.Req
   ( StatusCode(..)
   , Headers
   , Req
-  , IntOrInfinity(..)
   , reply
   , replyWithoutBody
   , replyWithFile
@@ -49,9 +48,11 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Erl.Atom (Atom, atom)
 import Erl.Data.Binary (Binary)
+import Erl.Data.Binary.IOData (IOData)
 import Erl.Data.List (List)
 import Erl.Data.Map (Map)
 import Erl.Data.Tuple (Tuple2, Tuple4)
+import Erl.Types (IntOrInfinity(..))
 import Foreign (Foreign, unsafeToForeign)
 
 foreign import data Req :: Type
@@ -64,7 +65,7 @@ type Headers
   = Map String String
 
 -- | Send the reply including the given body content (cowboy_req:reply/4)
-foreign import reply :: StatusCode -> Headers -> String -> Req -> Effect Req
+foreign import reply :: StatusCode -> Headers -> IOData -> Req -> Effect Req
 
 -- | Send the reply without setting the body (cowboy_req:reply/3)
 foreign import replyWithoutBody :: StatusCode -> Headers -> Req -> Effect Req
@@ -151,7 +152,7 @@ foreign import setCookie :: String -> String -> Req -> Req
 
 foreign import setCookieWithOpts :: String -> String -> CookieOpts -> Req -> Req
 
--- | Set response body. As should be apparent from the type, this does not actually send the body but merely sets it in the Req, 
+-- | Set response body. As should be apparent from the type, this does not actually send the body but merely sets it in the Req,
 -- | the body is sent once reply is called.
 foreign import setBody :: String -> Req -> Req
 
@@ -165,14 +166,9 @@ foreign import parseCookies :: Req -> List (Tuple2 String String)
 -- Streaming responses
 foreign import streamReply :: StatusCode -> Headers -> Req -> Effect Req
 
--- TODO: binary/iolist ?
-foreign import streamBody :: Binary -> Req -> Effect Unit
+foreign import streamBody :: IOData -> Req -> Effect Unit
 
-foreign import streamBodyFinal :: Binary -> Req -> Effect Unit
-
-data IntOrInfinity
-  = Finite Int
-  | Infinity
+foreign import streamBodyFinal :: IOData -> Req -> Effect Unit
 
 setIdleTimeout :: IntOrInfinity -> Req -> Effect Unit
 setIdleTimeout (Finite n) = setIdleTimeout_ (unsafeToForeign n)

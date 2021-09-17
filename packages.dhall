@@ -3,6 +3,34 @@ let upstream =
 
 let overrides = {=}
 
-let additions = {=}
+let additions =
+      { erl-kernel =
+        { dependencies =
+          [ "convertable-options"
+          , "datetime"
+          , "effect"
+          , "either"
+          , "erl-atom"
+          , "erl-binary"
+          , "erl-lists"
+          , "erl-process"
+          , "erl-tuples"
+          , "erl-untagged-union"
+          , "foldable-traversable"
+          , "foreign"
+          , "functions"
+          , "integers"
+          , "maybe"
+          , "newtype"
+          , "partial"
+          , "prelude"
+          , "record"
+          , "typelevel-prelude"
+          , "unsafe-coerce"
+          ]
+        , repo = "https://github.com/id3as/purescript-erl-kernel.git"
+        , version = "2c1f78a3aa6993e91e342a984c522b87b98bbb2b"
+        }
+      }
 
 in  upstream // overrides // additions

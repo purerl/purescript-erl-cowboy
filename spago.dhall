@@ -12,6 +12,7 @@ You can edit this file as you like.
   "erl-maps",
   "erl-tuples",
   "erl-modules",
+  "erl-kernel",
   "foreign"
  ]
 , packages = ./packages.dhall
