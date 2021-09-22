@@ -3,19 +3,27 @@ Welcome to a Spago project!
 You can edit this file as you like.
 -}
 { name = "purescript-erl-cowboy"
-, dependencies = [
-  "console",
-  "effect",
-  "erl-atom",
-  "erl-binary",
-  "erl-lists",
-  "erl-maps",
-  "erl-tuples",
-  "erl-modules",
-  "erl-kernel",
-  "foreign"
- ]
+, dependencies =
+  [ "console"
+  , "effect"
+  , "either"
+  , "erl-atom"
+  , "erl-binary"
+  , "erl-kernel"
+  , "erl-lists"
+  , "erl-maps"
+  , "erl-modules"
+  , "erl-ranch"
+  , "erl-tuples"
+  , "foreign"
+  , "functions"
+  , "maybe"
+  , "prelude"
+  , "transformers"
+  , "tuples"
+  , "unsafe-coerce"
+  ]
 , packages = ./packages.dhall
-, sources = [ "src/**/*.purs"  ]
+, sources = [ "src/**/*.purs" ]
 , backend = "purerl"
 }

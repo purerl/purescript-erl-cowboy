@@ -3,46 +3,100 @@
 -- | To construct a working cowboy application, the definitions here can be used with
 -- | routing defined in `Erl.Cowboy.Routes`, and one of the handlers defind in submodules of
 -- | `Erl.Cowboy.Handlers`. Core request processing is handled in `Erl.Cowboy.Req`.
-module Erl.Cowboy (
-  TransOpt(..),
-  ProtoOpt(..),
+module Erl.Cowboy 
+(
   ProtocolOpts,
-  protocolOpts,
   dispatch,
   Env,
   startClear,
-  stopListener
+  startTls,
+  stopListener,
+  defaultOptions
 ) where
 
 import Prelude
 
 import Data.Either (Either)
+import Data.Maybe (Maybe(..), maybe, maybe')
 import Effect (Effect)
 import Erl.Atom (Atom, atom)
 import Erl.Cowboy.Routes (Dispatch)
 import Erl.Data.List (List)
 import Erl.Data.Map (Map)
 import Erl.Data.Map as Map
-import Erl.Data.Tuple (Tuple4)
+import Erl.Kernel.Inet as Inet
+import Erl.Kernel.Tcp as Tcp
 import Erl.ModuleName (NativeModuleName)
-import Foreign (Foreign)
+import Erl.Ranch as Ranch
+import Erl.Ssl as Ssl
+import Foreign (Foreign, unsafeToForeign)
 import Foreign as Foreign
+import Record as Record
+import Type.Proxy (Proxy(..))
 
-foreign import startClear :: Atom -> List TransOpt -> ProtocolOpts -> Effect (Either Foreign Unit)
+foreign import startClear_ :: Atom -> Foreign -> Map Atom Foreign -> Effect (Either Foreign Unit)
+foreign import startTls_ :: Atom -> Foreign -> Map Atom Foreign -> Effect (Either Foreign Unit)
+
+type RanchOptions socketOpts  =
+  ( 
+    socketOpts :: Maybe (Record socketOpts)
+  | 
+  Ranch.Options
+  )
+
+defaultOptions :: forall a. Record (RanchOptions a)
+defaultOptions = 
+  { connectionType: Nothing
+  , handshakeTimeout: Nothing
+  , maxConnections: Nothing
+  , numAcceptors: Nothing
+  , numConnsSups: Nothing
+  , shutdown: Nothing
+  , socketOpts: Nothing
+  } 
+
+type TcpOptions = Record (RanchOptions (Tcp.ListenOptions))
+type SslOptions = Record (RanchOptions (Ssl.ListenOptions))
+
+startClear :: Atom -> TcpOptions -> ProtocolOpts -> Effect (Either Foreign Unit)
+startClear name options protoOpts =
+  let 
+    socketOptions = Inet.optionsToErl <<< Ranch.excludeOptions <$> options.socketOpts
+    withoutSocketOptions = Record.delete (Proxy :: _ "socketOpts") options
+    erlOptions = maybe' (\_ -> Ranch.optionsToErl withoutSocketOptions) (\opts -> Ranch.optionsToErl $ Record.insert (Proxy :: _ "socket_opts") opts withoutSocketOptions) socketOptions
+  in
+  startClear_ name erlOptions (convertProtocolOpts protoOpts)
+
+
+startTls :: Atom -> SslOptions -> ProtocolOpts -> Effect (Either Foreign Unit)
+startTls name options protoOpts =
+  let 
+    socketOptions = Inet.optionsToErl <<< Ranch.excludeOptions <$> options.socketOpts
+    withoutSocketOptions = Record.delete (Proxy :: _ "socketOpts") options
+    erlOptions = maybe' (\_ -> Ranch.optionsToErl withoutSocketOptions) (\opts -> Ranch.optionsToErl $ Record.insert (Proxy :: _ "socket_opts") opts withoutSocketOptions) socketOptions
+  in
+  startTls_ name erlOptions (convertProtocolOpts protoOpts)
+
 
 foreign import stopListener :: Atom -> Effect Unit
 
 type Env = Map Atom Foreign
 
-data TransOpt = Ip (Tuple4 Int Int Int Int) | Port Int
-data ProtoOpt
-  = Env Env
-  | Middlewares (List NativeModuleName)
-  | StreamHandlers (List NativeModuleName)
+type ProtocolOpts =
+  { env :: Maybe Env
+  , middlewares :: Maybe (List NativeModuleName)
+  , streamHandlers :: Maybe (List NativeModuleName)
+  }
 
 dispatch :: Dispatch -> Env -> Env
 dispatch = Map.insert (atom "dispatch") <<< Foreign.unsafeToForeign
 
-foreign import data ProtocolOpts :: Type
-
-foreign import protocolOpts :: List ProtoOpt -> ProtocolOpts
+convertProtocolOpts :: ProtocolOpts -> Map Atom Foreign
+convertProtocolOpts { env, middlewares, streamHandlers } =
+  Map.empty
+    # opt "env" env
+    # opt "middlewares" middlewares
+    # opt "stream_handlers" streamHandlers
+  where
+  opt :: forall a. String -> Maybe a -> Map Atom Foreign -> Map Atom Foreign
+  opt str = maybe identity (Map.insert (atom str) <<< unsafeToForeign) 
