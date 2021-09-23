@@ -75,7 +75,7 @@ let additions =
           , "unsafe-coerce"
           ]
         , repo = "https://github.com/id3as/purescript-erl-ranch.git"
-        , version = "185e579b895aed58e5971920f9944c94bcac5fcb"
+        , version = "08a76bd850ba00c3a120c1d149bed07f9fcc165d"
         }
         , erl-otp-types =
         { dependencies =

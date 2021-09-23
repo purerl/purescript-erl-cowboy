@@ -39,13 +39,13 @@ foreign import startTls_ :: Atom -> Foreign -> Map Atom Foreign -> Effect (Eithe
 
 type RanchOptions socketOpts  =
   ( 
-    socketOpts :: Maybe (Record socketOpts)
+    socket_opts :: Maybe (Record socketOpts)
   | 
   Ranch.Options
   )
 
 defaultOptions :: forall a. Record (RanchOptions a)
-defaultOptions = Record.insert (Proxy :: _ "socketOpts") Nothing Ranch.defaultOptions
+defaultOptions = Record.insert (Proxy :: _ "socket_opts") Nothing Ranch.defaultOptions
 
 type TcpOptions = Record (RanchOptions (Tcp.ListenOptions))
 type SslOptions = Record (RanchOptions (Ssl.ListenOptions))
@@ -53,8 +53,8 @@ type SslOptions = Record (RanchOptions (Ssl.ListenOptions))
 startClear :: Atom -> TcpOptions -> ProtocolOpts -> Effect (Either Foreign Unit)
 startClear name options protoOpts =
   let 
-    socketOptions = Inet.optionsToErl <<< Ranch.excludeOptions <$> options.socketOpts
-    withoutSocketOptions = Record.delete (Proxy :: _ "socketOpts") options
+    socketOptions = Inet.optionsToErl <<< Ranch.excludeOptions <$> options.socket_opts
+    withoutSocketOptions = Record.delete (Proxy :: _ "socket_opts") options
     erlOptions = maybe' (\_ -> Ranch.optionsToErl withoutSocketOptions) (\opts -> Ranch.optionsToErl $ Record.insert (Proxy :: _ "socket_opts") opts withoutSocketOptions) socketOptions
   in
   startClear_ name erlOptions (convertProtocolOpts protoOpts)
@@ -63,8 +63,8 @@ startClear name options protoOpts =
 startTls :: Atom -> SslOptions -> ProtocolOpts -> Effect (Either Foreign Unit)
 startTls name options protoOpts =
   let 
-    socketOptions = Inet.optionsToErl <<< Ranch.excludeOptions <$> options.socketOpts
-    withoutSocketOptions = Record.delete (Proxy :: _ "socketOpts") options
+    socketOptions = Inet.optionsToErl <<< Ranch.excludeOptions <$> options.socket_opts
+    withoutSocketOptions = Record.delete (Proxy :: _ "socket_opts") options
     erlOptions = maybe' (\_ -> Ranch.optionsToErl withoutSocketOptions) (\opts -> Ranch.optionsToErl $ Record.insert (Proxy :: _ "socket_opts") opts withoutSocketOptions) socketOptions
   in
   startTls_ name erlOptions (convertProtocolOpts protoOpts)
