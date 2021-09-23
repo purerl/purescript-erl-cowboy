@@ -45,15 +45,7 @@ type RanchOptions socketOpts  =
   )
 
 defaultOptions :: forall a. Record (RanchOptions a)
-defaultOptions = 
-  { connectionType: Nothing
-  , handshakeTimeout: Nothing
-  , maxConnections: Nothing
-  , numAcceptors: Nothing
-  , numConnsSups: Nothing
-  , shutdown: Nothing
-  , socketOpts: Nothing
-  } 
+defaultOptions = Record.insert (Proxy :: _ "socketOpts") Nothing Ranch.defaultOptions
 
 type TcpOptions = Record (RanchOptions (Tcp.ListenOptions))
 type SslOptions = Record (RanchOptions (Ssl.ListenOptions))
