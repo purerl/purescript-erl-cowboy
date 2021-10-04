@@ -16,7 +16,6 @@ import Control.Monad.State.Class (class MonadState)
 import Effect (Effect)
 import Effect.Class (class MonadEffect, liftEffect)
 import Erl.Cowboy.Req as Req
-import Erl.Data.Binary (Binary)
 import Erl.Data.Binary.IOData (IOData)
 
 -- Like modify_ but with an effectful modification

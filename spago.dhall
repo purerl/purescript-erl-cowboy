@@ -4,8 +4,7 @@ You can edit this file as you like.
 -}
 { name = "purescript-erl-cowboy"
 , dependencies =
-  [ "console"
-  , "effect"
+  [ "effect"
   , "either"
   , "erl-atom"
   , "erl-binary"
@@ -14,11 +13,13 @@ You can edit this file as you like.
   , "erl-maps"
   , "erl-modules"
   , "erl-ranch"
+  , "erl-ssl"
   , "erl-tuples"
   , "foreign"
   , "functions"
   , "maybe"
   , "prelude"
+  , "record"
   , "transformers"
   , "tuples"
   , "unsafe-coerce"
